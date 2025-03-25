@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Builder</title>
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.8;
+        background: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2.5rem;
+        letter-spacing: 1.2px;
+    }
+    .btn-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+    .btn {
+        padding: 14px 30px;
+        background: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: 0.3s;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .btn:hover {
+        background: #2980b9;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    form {
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+    label, input, textarea {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    input, textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+    .photo-preview {
+        display: block;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+    /* Stylish Template */
+    .template-stylish {
+        display: flex;
+        background: #ffffff;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    .sidebar {
+        background: #f0f0f0;
+        width: 35%;
+        padding: 40px;
+        color: #333;
+        text-align: center;
+    }
+    .main-content {
+        width: 65%;
+        padding: 40px;
+    }
+    .template-basic {
+        background: #ffffff;
+        border: 1px solid #ccc;
+        padding: 40px;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        border-radius: 12px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Resume Builder</h1>
+    
+    <form id="resumeForm">
+        <label>Photo:</label>
+        <input type="file" id="photo" accept="image/*" onchange="previewPhoto()">
+        <img id="photo-preview" class="photo-preview" src="#" alt="Photo Preview" style="display:none;">
+        <label>Name:</label>
+        <input type="text" id="name" required>
+        <label>Email:</label>
+        <input type="email" id="email" required>
+        <label>Phone:</label>
+        <input type="text" id="phone" required>
+        <label>Location:</label>
+        <input type="text" id="location" required>
+        <label>Skills:</label>
+        <textarea id="skills" placeholder="List your key skills with bullet points" required></textarea>
+        <label>Work Experience:</label>
+        <textarea id="experience" placeholder="Company Name\nPosition\n• Key responsibility 1\n• Key responsibility 2" required></textarea>
+        <label>Education:</label>
+        <textarea id="education" placeholder="Degree\nUniversity\nYear" required></textarea>
+        <div class="btn-container">
+            <button type="button" class="btn" onclick="generateResume()">Generate Resume</button>
+        </div>
+    </form>
+    
+    <div class="btn-container">
+        <button class="btn" onclick="showStylish()">Stylish Template</button>
+        <button class="btn" onclick="showBasic()">Basic Template</button>
+        <button class="btn" onclick="downloadPDF()">Download as PDF</button>
+    </div>
+    
+    <div id="stylish" class="template-stylish" style="display:none;">
+        <div class="sidebar">
+            <img id="stylish-photo" class="photo-preview" src="#" alt="Photo">
+            <h2 id="stylish-name"></h2>
+            <p id="stylish-email"></p>
+            <p id="stylish-phone"></p>
+            <p id="stylish-location"></p>
+            <hr>
+            <h3>Skills</h3>
+            <p id="stylish-skills"></p>
+        </div>
+        <div class="main-content">
+            <h2>Work Experience</h2>
+            <p id="stylish-experience"></p>
+            <h2>Education</h2>
+            <p id="stylish-education"></p>
+        </div>
+    </div>
+
+    <div id="basic" class="template-basic" style="display:none;">
+        <h2 id="basic-name"></h2>
+        <img id="basic-photo" class="photo-preview" src="#" alt="Photo">
+        <p id="basic-email"></p>
+        <p id="basic-phone"></p>
+        <p id="basic-location"></p>
+        <hr>
+        <h2>Skills</h2>
+        <p id="basic-skills"></p>
+        <h2>Work Experience</h2>
+        <p id="basic-experience"></p>
+        <h2>Education</h2>
+        <p id="basic-education"></p>
+    </div>
+</div>
+
+<script>
+    function previewPhoto() {
+        const file = document.getElementById('photo').files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photo-preview').src = e.target.result;
+            document.getElementById('photo-preview').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+
+    function generateResume() {
+        const photoSrc = document.getElementById('photo-preview').src;
+        document.getElementById('stylish-photo').src = photoSrc;
+        document.getElementById('basic-photo').src = photoSrc;
+    }
+
+    function showStylish() {
+        document.getElementById('stylish').style.display = 'flex';
+        document.getElementById('basic').style.display = 'none';
+    }
+
+    function showBasic() {
+        document.getElementById('basic').style.display = 'block';
+        document.getElementById('stylish').style.display = 'none';
+    }
+
+    function downloadPDF() {
+        window.print();
+    }
+</script>
+
+</body>
+</html>
